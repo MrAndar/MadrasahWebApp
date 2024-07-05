@@ -1,0 +1,43 @@
+<!-- templates/accounts/profile_detail.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ profile.user.first_name }} {{ profile.user.last_name }}'s Profile</title>
+    <style>
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .profile-details {
+            margin: 20px 0;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .profile-details p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
+        <div class="profile-details">
+            <p><strong>Date Joined:</strong> {{ profile.user.date_joined|date:"F j y" }}</p>
+            <p><strong>User Type:</strong> {{ profile.get_user_type_display }}</p>
+            <p><strong>Class Name:</strong> {{ profile.class_name.name }}</p>
+            <p><strong>Teacher:</strong> Ustadh {{ profile.class_name.teacher.user.first_name }}</p>
+            <p><strong>Attendance:</strong> {{ profile.attendance }}</p>
+            <p><strong>Punctuality:</strong> {{ profile.punctuality }}</p>
+        </div>
+        <a href="{% url 'profile-list' %}">Back to list</a>
+    </div>
+</body>
+</html>

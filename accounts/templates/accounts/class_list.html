@@ -1,0 +1,75 @@
+<!-- templates/accounts/class_list.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Class List</h1>
+        <a href="{% url 'home' %}">Back to Home</a>
+        <form method="get" action="{% url 'class-list' %}">
+            <label for="search">Search:</label>
+            <input type="text" name="search" id="search" placeholder="Search classes" value="{{ request.GET.search }}">
+            <label for="book">Filter by book:</label>
+            <select name="book" id="book">
+                <option value="">All</option>
+                <option value="qaidah" {% if request.GET.book == 'qaidah' %}selected{% endif %}>Qaidah</option>
+                <option value="quran_reading" {% if request.GET.book == 'quran_reading' %}selected{% endif %}>Quran Reading</option>
+                <option value="hifz" {% if request.GET.book == 'hifz' %}selected{% endif %}>Hifz</option>
+                <option value="na" {% if request.GET.book == 'na' %}selected{% endif %}>N/A</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+        <a href="{% url 'class-create' %}">Create New Class</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>Class Name</th>
+                    <th>Teacher</th>
+                    <th>Book</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for class in classes %}
+                    <tr>
+                        <td>{{ class.name }}</td>
+                        <td>Ustadh {{ class.teacher }}</td>
+                        <td>{{ class.book }}</td>
+                        <td>
+                            <a href="{% url 'class-detail' class.pk %}">View</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

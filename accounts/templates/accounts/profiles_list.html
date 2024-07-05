@@ -1,0 +1,91 @@
+<!-- templates/accounts/profile_list.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile List</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Profile List</h1>
+        <a href="{% url 'home' %}">Back to Home</a>
+        <form method="get" action="{% url 'profile-list' %}">
+            <label for="search">Search:</label>
+            <input type="text" name="search" id="search" placeholder="Search profiles" value="{{ request.GET.search }}">
+            <label for="user_type">Filter by user type:</label>
+            <select name="user_type" id="user_type">
+                <option value="">All</option>
+                <option value="admin_teacher" {% if request.GET.user_type == 'admin_teacher' %}selected{% endif %}>Admin Teacher</option>
+                <option value="regular_teacher" {% if request.GET.user_type == 'regular_teacher' %}selected{% endif %}>Regular Teacher</option>
+                <option value="student" {% if request.GET.user_type == 'student' %}selected{% endif %}>Student</option>
+                <option value="waiting_list" {% if request.GET.user_type == 'waiting_list' %}selected{% endif %}>Waiting List</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+        <a href="{% url 'profile-create' %}">Create New Profile</a>
+        <table>
+            <thead>
+                <tr>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Date Joined</th>
+                    <th>User Type</th>
+                    <th>Class Name</th>
+                    <th>Teacher</th>
+                    <th>Attendance</th>
+                    <th>Punctuality</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for profile in profiles %}
+                    <tr>
+                        <td>{{ profile.user.first_name }}</td>
+                        <td>{{ profile.user.last_name }}</td>
+                        <td>{{ profile.user.date_joined|date:"F j y"  }}</td>
+                        <td>{{ profile.get_user_type_display }}</td>
+                        <td>{{ profile.class_name.name }}</td>
+                        {% if profile.class_name.teacher %}
+                        <td>Ustadh {{ profile.class_name.teacher.user.first_name }}</td>
+                        {% else %}
+                        <td>N/A</td>
+                        {% endif %}
+                        <td>{{ profile.attendance }}</td>
+                        <td>{{ profile.punctuality }}</td>
+                        <td>
+                            <a href="{% url 'profile-detail' profile.pk %}">View</a>
+                            <a href="#">Edit</a>
+                            <a href="#">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
