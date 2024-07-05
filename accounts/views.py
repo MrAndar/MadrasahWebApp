@@ -80,7 +80,7 @@ class ClassDetailView(DetailView):
     context_object_name = 'class'
 
 
-class ClassCreateView(CreateView):
+class ClassCreateView(LoginRequiredMixin, CreateView):
     model = ClassName
     form_class = ClassForm
     template_name = 'accounts/class_form.html'
