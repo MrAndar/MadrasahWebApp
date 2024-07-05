@@ -5,24 +5,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Detail</title>
+    <title>{{ class.name }}</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
         .container {
             width: 80%;
             margin: auto;
             padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
         h1 {
             text-align: center;
+            color: #343a40;
         }
         .class-details {
-            margin: 20px 0;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            margin-bottom: 20px;
         }
         .class-details p {
-            margin: 10px 0;
+            font-size: 18px;
+            color: #495057;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #dee2e6;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #e9ecef;
+            color: #495057;
+        }
+        .actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .actions button,
+        .actions a {
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .actions button {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .actions a {
+            background-color: #6c757d;
+            color: #fff;
         }
     </style>
 </head>
@@ -30,10 +75,36 @@
     <div class="container">
         <h1>{{ class.name }}</h1>
         <div class="class-details">
-            <p><strong>Teacher:</strong> Ustadh {{ class.teacher }}</p>
+            <p><strong>Teacher:</strong> Ustadh {{ class.teacher.user.first_name }}</p>
             <p><strong>Book:</strong> {{ class.book }}</p>
         </div>
-        <a href="{% url 'class-list' %}">Back to list</a>
+        <h2>Attendance</h2>
+        <form method="post" action="{% url 'attendance-form' class.id %}">
+            {% csrf_token %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Status</th>
+                        <th>Reason</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{ attendance_formset.management_form }}
+                    {% for form in attendance_formset %}
+                        <tr>
+                            <td>{{ form.instance.student.first_name }} {{ form.instance.student.last_name }}</td>
+                            <td>{{ form.status }}</td>
+                            <td>{{ form.reason }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="actions">
+                <button type="submit">Submit Attendance</button>
+                <a href="{% url 'class-list' %}">Back to Classes</a>
+            </div>
+        </form>
     </div>
 </body>
 </html>

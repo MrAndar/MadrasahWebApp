@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Profile, ClassName
+from .models import Profile, ClassName, Attendance
+from django.forms import modelformset_factory
 
 
 class ClassForm(forms.ModelForm):
@@ -41,3 +42,12 @@ class ExtendedUserCreationForm(UserCreationForm):
                 profile.class_name = self.cleaned_data['class_name']
                 profile.save()
         return user
+
+
+class AttendanceForm(forms.ModelForm):
+    class Meta:
+        model = Attendance
+        fields = ['status', 'reason']
+
+
+AttendanceFormSet = modelformset_factory(Attendance, form=AttendanceForm, extra=0)

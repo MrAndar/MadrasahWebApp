@@ -1,11 +1,14 @@
-from django.shortcuts import render
+from datetime import date
+
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
-from django.views.generic import ListView, DetailView, TemplateView
-from .models import Profile, ClassName
+from django.views.generic import ListView, DetailView, TemplateView, FormView
+from .models import Profile, ClassName, Attendance
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import CreateView
-from .forms import ExtendedUserCreationForm, ClassForm
+from .forms import ExtendedUserCreationForm, ClassForm, AttendanceForm, AttendanceFormSet
 
 
 def error_404_view(request, exception):
@@ -83,10 +86,54 @@ class ClassListView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class ClassDetailView(LoginRequiredMixin, DetailView):
+class ClassDetailView(DetailView):
     model = ClassName
     template_name = 'accounts/class_detail.html'
     context_object_name = 'class'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        class_obj = self.get_object()
+        students = Profile.objects.filter(class_name=class_obj)
+
+        # Create empty Attendance instances for each student if not already present for today
+        for student in students:
+            Attendance.objects.get_or_create(
+                student=student.user,
+                class_name=class_obj,
+                date=date.today(),
+                defaults={'status': 'absent', 'teacher': self.request.user}
+                # Default status to 'absent' and set the teacher
+            )
+
+        attendance_formset = AttendanceFormSet(
+            queryset=Attendance.objects.filter(class_name=class_obj, date=date.today())
+        )
+        context['students'] = students
+        context['attendance_formset'] = attendance_formset
+        return context
+
+
+class AttendanceFormView(FormView):
+    template_name = 'accounts/class_detail.html'
+    form_class = AttendanceFormSet
+
+    def form_valid(self, formset):
+        class_id = self.kwargs['class_id']
+        class_obj = get_object_or_404(ClassName, id=class_id)
+        for form in formset:
+            form.instance.class_name = class_obj
+            form.instance.teacher = self.request.user
+            form.save()
+        return redirect('class-detail', pk=class_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        class_obj = get_object_or_404(ClassName, id=self.kwargs['class_id'])
+        context['class'] = class_obj
+        context['attendance_formset'] = AttendanceFormSet(
+            queryset=Attendance.objects.filter(class_name=class_obj, date=date.today()))
+        return context
 
 
 class ClassCreateView(LoginRequiredMixin, CreateView):
