@@ -19,7 +19,8 @@
             text-align: center;
             margin-top: 20px;
         }
-        .nav-links a {
+        .nav-links a,
+        .nav-links form {
             display: inline-block;
             margin: 0 15px;
             padding: 10px 15px;
@@ -28,8 +29,21 @@
             text-decoration: none;
             border-radius: 5px;
         }
-        .nav-links a:hover {
+        .nav-links a:hover,
+        .nav-links form button:hover {
             background-color: #4cae4c;
+        }
+        .nav-links form {
+            margin: 0;
+            padding: 0;
+        }
+        .nav-links form button {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -39,6 +53,10 @@
         <div class="nav-links">
             <a href="{% url 'profile-list' %}">Profiles List</a>
             <a href="{% url 'class-list' %}">Classes List</a>
+            <form method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
         </div>
     </div>
 </body>

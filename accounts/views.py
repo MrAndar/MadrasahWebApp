@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from django.db.models import Q
 from django.views.generic import ListView, DetailView, TemplateView
 from .models import Profile, ClassName
@@ -7,7 +8,15 @@ from django.views.generic import CreateView
 from .forms import ExtendedUserCreationForm, ClassForm
 
 
-class HomePageView(TemplateView):
+def error_404_view(request, exception):
+    return render(request, 'accounts/404.html', status=404)
+
+
+def error_403_view(request, exception):
+    return render(request, 'accounts/403.html', status=403)
+
+
+class HomePageView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/home.html'
 
 
@@ -22,7 +31,7 @@ class ProfileCreateView(LoginRequiredMixin, CreateView):
         return super().dispatch(*args, **kwargs)
 
 
-class ProfileListView(ListView):
+class ProfileListView(LoginRequiredMixin, ListView):
     model = Profile
     template_name = 'accounts/profiles_list.html'
     context_object_name = 'profiles'
@@ -46,13 +55,13 @@ class ProfileListView(ListView):
         return queryset
 
 
-class ProfileDetailView(DetailView):
+class ProfileDetailView(LoginRequiredMixin, DetailView):
     model = Profile
     template_name = 'accounts/profile_detail.html'
     context_object_name = 'profile'
 
 
-class ClassListView(ListView):
+class ClassListView(LoginRequiredMixin, ListView):
     model = ClassName
     template_name = 'accounts/class_list.html'
     context_object_name = 'classes'
@@ -74,7 +83,7 @@ class ClassListView(ListView):
         return queryset
 
 
-class ClassDetailView(DetailView):
+class ClassDetailView(LoginRequiredMixin, DetailView):
     model = ClassName
     template_name = 'accounts/class_detail.html'
     context_object_name = 'class'
