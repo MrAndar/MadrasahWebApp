@@ -1,14 +1,11 @@
-from datetime import date
-
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
-from django.views.generic import ListView, DetailView, TemplateView, FormView
-from .models import Profile, ClassName, Attendance
+from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView
-from .forms import ExtendedUserCreationForm, ClassForm, AttendanceForm, AttendanceFormSet
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from .models import Profile, ClassName
+from .forms import ExtendedUserCreationForm, ClassForm
 
 
 def error_404_view(request, exception):
@@ -23,15 +20,13 @@ class HomePageView(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/home.html'
 
 
-class ProfileCreateView(LoginRequiredMixin, CreateView):
+class ProfileCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     form_class = ExtendedUserCreationForm
     template_name = 'accounts/register.html'
     success_url = reverse_lazy('profile-list')
 
-    def dispatch(self, *args, **kwargs):
-        if not self.request.user.profile.user_type == 'admin_teacher':
-            return self.handle_no_permission()  # Redirect non-admin teachers
-        return super().dispatch(*args, **kwargs)
+    def test_func(self):
+        return self.request.user.profile.user_type == 'admin_teacher'
 
 
 class ProfileListView(LoginRequiredMixin, ListView):
@@ -64,6 +59,27 @@ class ProfileDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'profile'
 
 
+class ProfileUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Profile
+    fields = ['user_type', 'class_name', 'attendance', 'punctuality']
+    template_name = 'accounts/profile_update.html'
+    success_url = reverse_lazy('profile-list')
+
+    def test_func(self):
+        # Allow only admin teachers to update profiles
+        return self.request.user.profile.user_type == 'admin_teacher'
+
+
+class ProfileDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Profile
+    template_name = 'accounts/profile_confirm_delete.html'
+    success_url = reverse_lazy('profile-list')
+
+    def test_func(self):
+        # Allow only admin teachers to delete profiles
+        return self.request.user.profile.user_type == 'admin_teacher'
+
+
 class ClassListView(LoginRequiredMixin, ListView):
     model = ClassName
     template_name = 'accounts/class_list.html'
@@ -77,7 +93,8 @@ class ClassListView(LoginRequiredMixin, ListView):
         if search_query:
             queryset = queryset.filter(
                 Q(name__icontains=search_query) |
-                Q(teacher__icontains=search_query)
+                Q(teacher__user__first_name__icontains=search_query) |
+                Q(teacher__user__last_name__icontains=search_query)
             )
 
         if book_filter:
@@ -86,7 +103,7 @@ class ClassListView(LoginRequiredMixin, ListView):
         return queryset
 
 
-class ClassDetailView(DetailView):
+class ClassDetailView(LoginRequiredMixin, DetailView):
     model = ClassName
     template_name = 'accounts/class_detail.html'
     context_object_name = 'class'
@@ -95,48 +112,11 @@ class ClassDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         class_obj = self.get_object()
         students = Profile.objects.filter(class_name=class_obj)
-
-        # Create empty Attendance instances for each student if not already present for today
-        for student in students:
-            Attendance.objects.get_or_create(
-                student=student.user,
-                class_name=class_obj,
-                date=date.today(),
-                defaults={'status': 'absent', 'teacher': self.request.user}
-                # Default status to 'absent' and set the teacher
-            )
-
-        attendance_formset = AttendanceFormSet(
-            queryset=Attendance.objects.filter(class_name=class_obj, date=date.today())
-        )
         context['students'] = students
-        context['attendance_formset'] = attendance_formset
         return context
 
 
-class AttendanceFormView(FormView):
-    template_name = 'accounts/class_detail.html'
-    form_class = AttendanceFormSet
-
-    def form_valid(self, formset):
-        class_id = self.kwargs['class_id']
-        class_obj = get_object_or_404(ClassName, id=class_id)
-        for form in formset:
-            form.instance.class_name = class_obj
-            form.instance.teacher = self.request.user
-            form.save()
-        return redirect('class-detail', pk=class_id)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        class_obj = get_object_or_404(ClassName, id=self.kwargs['class_id'])
-        context['class'] = class_obj
-        context['attendance_formset'] = AttendanceFormSet(
-            queryset=Attendance.objects.filter(class_name=class_obj, date=date.today()))
-        return context
-
-
-class ClassCreateView(LoginRequiredMixin, CreateView):
+class ClassCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = ClassName
     form_class = ClassForm
     template_name = 'accounts/class_form.html'
@@ -144,3 +124,23 @@ class ClassCreateView(LoginRequiredMixin, CreateView):
 
     def test_func(self):
         return self.request.user.profile.user_type == 'admin_teacher'
+
+
+class ClassUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = ClassName
+    form_class = ClassForm
+    template_name = 'accounts/class_form.html'
+    success_url = reverse_lazy('class-list')
+
+    def test_func(self):
+        return self.request.user.profile.user_type == 'admin_teacher'
+
+
+class ClassDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = ClassName
+    template_name = 'accounts/class_confirm_delete.html'
+    success_url = reverse_lazy('class-list')
+
+    def test_func(self):
+        return self.request.user.profile.user_type == 'admin_teacher'
+

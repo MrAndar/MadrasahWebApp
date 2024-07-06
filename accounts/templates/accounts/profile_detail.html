@@ -1,5 +1,3 @@
-<!-- templates/accounts/profile_detail.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,22 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ profile.user.first_name }} {{ profile.user.last_name }}'s Profile</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
         .container {
             width: 80%;
-            margin: auto;
+            margin: 50px auto;
+            background-color: #fff;
             padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
         h1 {
             text-align: center;
+            color: #343a40;
         }
         .profile-details {
             margin: 20px 0;
             padding: 20px;
             border: 1px solid #ccc;
-            border-radius: 5px;
+            border-radius: 8px;
+            background-color: #f2f2f2;
         }
         .profile-details p {
             margin: 10px 0;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+        .actions a {
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -30,12 +54,20 @@
     <div class="container">
         <h1>{{ profile.user.first_name }} {{ profile.user.last_name }}</h1>
         <div class="profile-details">
-            <p><strong>Date Joined:</strong> {{ profile.user.date_joined|date:"F j y" }}</p>
+            <p><strong>Date Joined:</strong> {{ profile.user.date_joined|date:"F j, Y" }}</p>
             <p><strong>User Type:</strong> {{ profile.get_user_type_display }}</p>
             <p><strong>Class Name:</strong> {{ profile.class_name.name }}</p>
+            {% if profile.class_name.teacher %}
             <p><strong>Teacher:</strong> Ustadh {{ profile.class_name.teacher.user.first_name }}</p>
+            {% else %}
+            <p><strong>Teacher:</strong> N/A</p>
+            {% endif %}
             <p><strong>Attendance:</strong> {{ profile.attendance }}</p>
             <p><strong>Punctuality:</strong> {{ profile.punctuality }}</p>
+        </div>
+        <div class="actions">
+            <a href="{% url 'profile-update' profile.pk %}">Edit</a>
+            <a href="{% url 'profile-delete' profile.pk %}">Delete</a>
         </div>
         <a href="{% url 'profile-list' %}">Back to list</a>
     </div>

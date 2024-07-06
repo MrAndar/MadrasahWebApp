@@ -4,19 +4,24 @@ from django.contrib.auth.models import User
 from .models import Profile, ClassName
 
 
-# Define an inline admin descriptor for Profile model
 class ProfileInline(admin.StackedInline):
     model = Profile
     can_delete = False
     verbose_name_plural = 'profile'
 
 
-# Define a new User admin
 class UserAdmin(BaseUserAdmin):
     inlines = (ProfileInline,)
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff')
+    list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups')
 
 
-# Re-register UserAdmin
+class ClassNameAdmin(admin.ModelAdmin):
+    list_display = ('name', 'teacher', 'book', 'created_at')
+    list_filter = ('book', 'teacher')
+    search_fields = ('name', 'teacher__user__first_name', 'teacher__user__last_name')
+
+
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
-admin.site.register(ClassName)
+admin.site.register(ClassName, ClassNameAdmin)
