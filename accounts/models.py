@@ -16,12 +16,8 @@ class ClassName(models.Model):
     ]
 
     name = models.CharField(max_length=100)
-    teacher = models.ForeignKey(
-        'Profile',
-        on_delete=models.SET_NULL,
-        null=True,
-        limit_choices_to={'user_type__in': ['admin_teacher', 'regular_teacher']}
-    )
+    teacher = models.ForeignKey('Profile', on_delete=models.SET_NULL, null=True,
+                                limit_choices_to={'user_type__in': ['admin_teacher', 'regular_teacher']})
     book = models.CharField(max_length=20, choices=BOOK_CHOICES, default=NA)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -48,13 +44,7 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default=WAITING_LIST)
-    class_name = models.ForeignKey(
-        ClassName,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='students'
-    )
+    class_name = models.ForeignKey(ClassName, on_delete=models.SET_NULL, null=True, blank=True, related_name='students')
     attendance = models.FloatField(default=0.0, null=True, blank=True)
     punctuality = models.FloatField(default=0.0, null=True, blank=True)
 

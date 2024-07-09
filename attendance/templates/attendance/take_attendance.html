@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        button[type="submit"] {
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button[type="submit"]:hover {
+            background: #0056b3;
+        }
+        .reason-input {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Take Attendance for {{ class_instance.name }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="date">Date</label>
+            <input type="date" name="date" id="date" required>
+        </div>
+        {{ formset.management_form }}
+        {% for form, student in form_student_pairs %}
+            <div class="form-group">
+                <label>{{ student.user.get_full_name }}</label>
+                <div class="form-group">
+                    <label for="{{ form.prefix }}-status">Status</label>
+                    <select name="{{ form.prefix }}-status" id="{{ form.prefix }}-status" required>
+                        <option value="P" {% if form.initial.status == "P" %}selected{% endif %}>Present</option>
+                        <option value="L" {% if form.initial.status == "L" %}selected{% endif %}>Late</option>
+                        <option value="A" {% if form.initial.status == "A" %}selected{% endif %}>Absent</option>
+                    </select>
+                </div>
+                <div class="reason-input">
+                    {{ form.reason }}
+                </div>
+            </div>
+        {% endfor %}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

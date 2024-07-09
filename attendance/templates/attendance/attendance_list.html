@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Records</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .class-section {
+            margin-bottom: 30px;
+        }
+        .student-section {
+            margin-left: 20px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin: 5px 0;
+            display: inline-block;
+        }
+        .record-item {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+            position: relative;
+        }
+        .record-item.present {
+            background-color: #28a745;
+        }
+        .record-item.late {
+            background-color: #ffc107;
+        }
+        .record-item.absent {
+            background-color: #dc3545;
+        }
+        .tooltip {
+            display: none;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px;
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        .record-item:hover .tooltip {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Attendance Records</h1>
+    {% for class_name, students in classes.items %}
+        <div class="class-section">
+            <h2>{{ class_name.name }}</h2>
+            {% for student, records in students.items %}
+                <div class="student-section">
+                    <h3>{{ student.user.first_name }} {{ student.user.last_name }}</h3>
+                    <ul>
+                        {% for record in records %}
+                            <li>
+                                <div class="record-item {{ record.get_status_display|lower }}">
+                                    {{ record.date }}
+                                    {% if record.status in 'LA' %}
+                                        <div class="tooltip">{{ record.reason }}</div>
+                                    {% endif %}
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var items = document.querySelectorAll('.record-item');
+
+            items.forEach(function(item) {
+                item.addEventListener('click', function() {
+                    var tooltip = this.querySelector('.tooltip');
+                    if (tooltip) {
+                        tooltip.style.display = tooltip.style.display === 'block' ? 'none' : 'block';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
