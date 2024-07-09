@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db import models
-from django.db.models import UniqueConstraint
 
 from accounts.models import Profile, ClassName
 
@@ -19,7 +18,7 @@ class Attendance(models.Model):
 
     class Meta:
         constraints = [
-            UniqueConstraint(fields=['profile', 'date'], name='unique_attendance_record')
+            models.UniqueConstraint(fields=['profile', 'date'], name='unique_profile'),
         ]
 
     def __str__(self):

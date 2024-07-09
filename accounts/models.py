@@ -44,7 +44,7 @@ class Profile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, default=WAITING_LIST)
-    class_name = models.ForeignKey(ClassName, on_delete=models.SET_NULL, null=True, blank=True, related_name='students')
+    class_name = models.ForeignKey(ClassName, on_delete=models.SET_NULL, null=True,blank=True, related_name='students')
     attendance = models.FloatField(default=0.0, null=True, blank=True)
     punctuality = models.FloatField(default=0.0, null=True, blank=True)
 
