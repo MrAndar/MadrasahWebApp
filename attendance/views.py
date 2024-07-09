@@ -53,7 +53,6 @@ class TakeAttendanceView(LoginRequiredMixin, View):
         ]
         formset = AttendanceFormSet(initial=initial_data)
 
-        # Combine forms and students into a single list of tuples
         form_student_pairs = list(zip(formset.forms, students))
 
         return render(request, self.template_name,
@@ -73,7 +72,6 @@ class TakeAttendanceView(LoginRequiredMixin, View):
                     attendance.save()
             return redirect(self.success_url)
 
-        # Combine forms and students into a single list of tuples
         form_student_pairs = list(zip(formset.forms, students))
 
         return render(request, self.template_name,

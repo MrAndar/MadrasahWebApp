@@ -6,12 +6,16 @@ from .models import Attendance
 
 
 class AttendanceForm(forms.ModelForm):
-    status = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
         model = Attendance
         fields = ['status', 'reason']
         widgets = {
+            'status': forms.Select(choices=[
+                ('P', 'Present'),
+                ('L', 'Late'),
+                ('A', 'Absent')
+            ]),
             'reason': forms.TextInput(attrs={'placeholder': 'Reason if late or absent'})
         }
 
