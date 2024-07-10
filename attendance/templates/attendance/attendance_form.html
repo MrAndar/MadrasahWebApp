@@ -1,0 +1,80 @@
+<!-- attendance/templates/attendance/attendance_form.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        section {
+            padding: 2em;
+        }
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 1em;
+        }
+        .form-container h2 {
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 0.5em;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+        }
+        .form-container form label {
+            font-weight: bold;
+        }
+        .form-container form input,
+        .form-container form select {
+            padding: 0.5em;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .form-container form button {
+            padding: 0.5em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container form button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Update Attendance</h1>
+    </header>
+
+    <section>
+        <div class="form-container">
+            <h2>Update Attendance Record</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Save changes</button>
+            </form>
+        </div>
+    </section>
+</body>
+</html>

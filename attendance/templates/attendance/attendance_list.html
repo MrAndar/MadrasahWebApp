@@ -19,10 +19,32 @@
         }
         .student-section {
             margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        .student-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .student-name {
+            margin-right: 10px;
+        }
+        .view-records-button {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .view-records-button:hover {
+            background-color: #0056b3;
         }
         ul {
             list-style: none;
             padding: 0;
+            margin: 0;
         }
         li {
             margin: 5px 0;
@@ -70,7 +92,12 @@
             <h2>{{ class_name.name }}</h2>
             {% for student, records in students.items %}
                 <div class="student-section">
-                    <h3>{{ student.user.first_name }} {{ student.user.last_name }}</h3>
+                    <div class="student-header">
+                        <h3 class="student-name">{{ student.user.first_name }} {{ student.user.last_name }}</h3>
+                        <a href="{% url 'attendance-detail' profile_id=student.id %}" class="view-records-button">
+                            View all records
+                        </a>
+                    </div>
                     <ul>
                         {% for record in records %}
                             <li>
