@@ -85,10 +85,9 @@
             {% for reflection in reflections %}
                 <div class="card">
                     <h3><a href="{% url 'reflection-detail' reflection.id %}">{{ reflection.title }}</a></h3>
-                    <p>by {{ reflection.owner.user.get_full_name }}</p>
-                    <p>{{ reflection.created_at }}</p>
                     <p><strong>Ayah:</strong> {{ reflection.ayah|truncatechars:100 }}</p>
                     <p><strong>Reflection:</strong> {{ reflection.reflection|truncatechars:100 }}</p>
+                    <p>by {{ reflection.owner.user.get_full_name }} on <em>{{ reflection.created_at }}</em></p>
                     {% if request.user.profile == reflection.owner or request.user.profile.user_type == 'admin_teacher' %}
                         <a href="{% url 'reflection-update' reflection.id %}" class="btn btn-secondary">Edit</a>
                         <a href="{% url 'reflection-delete' reflection.id %}" class="btn btn-danger">Delete</a>
