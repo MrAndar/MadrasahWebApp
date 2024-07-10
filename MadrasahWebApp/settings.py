@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     'accounts.apps.AccountsConfig',
     'attendance.apps.AttendanceConfig',
+    'reflections.apps.ReflectionsConfig',
 ]
 
 MIDDLEWARE = [
