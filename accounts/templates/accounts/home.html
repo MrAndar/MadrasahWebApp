@@ -64,6 +64,8 @@
         <div class="nav-links">
             <a href="{% url 'profile-list' %}">Profiles List</a>
             <a href="{% url 'class-list' %}">Classes List</a>
+            <a href="{% url 'daily_reading_list' %}">Daily Reading</a>
+            <a href="{% url 'reflection-list' %}">Reflections</a>
             <form method="post" action="{% url 'logout' %}">
                 {% csrf_token %}
                 <button type="submit">Logout</button>

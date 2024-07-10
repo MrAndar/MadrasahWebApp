@@ -1,0 +1,78 @@
+<!-- daily_readings/templates/daily_readings/daily_reading_form.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Daily Reading</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        nav {
+            text-align: center;
+            margin: 1em 0;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        main {
+            padding: 2em;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            background-color: #4CAF50;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 1em;
+            margin-bottom: 1em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Create Daily Reading</h1>
+    </header>
+    <nav>
+        <a href="{% url 'daily_reading_list' %}">Home</a>
+        <a href="{% url 'daily_reading_create' %}" class="btn">Create New Daily Reading</a>
+    </nav>
+    <main>
+        <div class="card">
+            <h2>Create Daily Reading</h2>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn">Save</button>
+                <a href="{% url 'daily_reading_list' %}" class="btn">Cancel</a>
+            </form>
+        </div>
+    </main>
+</body>
+</html>

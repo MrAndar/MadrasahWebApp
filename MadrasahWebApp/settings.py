@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'attendance.apps.AttendanceConfig',
     'reflections.apps.ReflectionsConfig',
+    'daily_reading.apps.DailyReadingConfig',
 ]
 
 MIDDLEWARE = [
