@@ -71,10 +71,10 @@ class AttendanceDetailView(LoginRequiredMixin, ListView):
         today = date.today()
         total_possible_attendances = (today - user_created_date).days
 
-        # Calculate attendance and punctuality percentages
+        total_attendance_count = present_count + late_count
         if total_possible_attendances > 0:
-            attendance_percentage = (present_count / total_possible_attendances) * 100
-            punctuality_percentage = ((present_count + late_count) / total_possible_attendances) * 100
+            attendance_percentage = (total_attendance_count / total_possible_attendances) * 100
+            punctuality_percentage = (late_count / (present_count + late_count)) * 100
         else:
             attendance_percentage = 0
             punctuality_percentage = 0
