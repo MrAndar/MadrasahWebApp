@@ -1,0 +1,140 @@
+<!-- daily_readings/templates/daily_readings/daily_reading_list.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Readings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        nav {
+            text-align: center;
+            margin: 1em 0;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        main {
+            padding: 2em;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 0.5em;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .completed {
+            background-color: #28a745;
+            color: white;
+        }
+        .completed-late {
+            background-color: #ffc107;
+            color: white;
+        }
+        .not-completed {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            background-color: #4CAF50;
+            margin: 2px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-secondary {
+            background-color: #007bff;
+        }
+        .btn-secondary:hover {
+            background-color: #0056b3;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Daily Readings</h1>
+    </header>
+    <nav>
+        <a href="{% url 'daily_reading_list' %}">Home</a>
+        <a href="{% url 'daily_reading_create' %}" class="btn">Create New Daily Reading</a>
+    </nav>
+    <main>
+        <h2>Readings from Tuesday to Sunday</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    {% for date in dates %}
+                        <th>{{ date|date:"l" }}</th>
+                    {% endfor %}
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student, readings in student_readings %}
+                    <tr>
+                        <td>{{ student.user.get_full_name }}</td>
+                        {% for date, reading in readings %}
+                            <td class="{% if reading and reading.completed %}completed{% else %}not-completed{% endif %}">
+                                {% if reading %}
+                                    <div>
+                                        {% if request.user.profile == student or request.user.profile.user_type == 'admin_teacher' %}
+                                            <a href="{% url 'daily_reading_update' reading.id %}" class="btn btn-secondary">Edit</a>
+                                            <a href="{% url 'daily_reading_delete' reading.id %}" class="btn btn-danger">Delete</a>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                        <td>
+                            <a href="{% url 'daily_reading_create' %}" class="btn">Create</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>
