@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        section {
+            padding: 2em;
+        }
+        .profile-info, .attendance-records, .attendance-summary {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2em;
+            padding: 1em;
+        }
+        .profile-info h2, .attendance-records h2, .attendance-summary h2 {
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 0.5em;
+        }
+        .profile-info p, .attendance-records p, .attendance-summary p {
+            margin: 0.5em 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 0.5em;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        footer {
+            text-align: center;
+            padding: 1em 0;
+            background-color: #4CAF50;
+            color: white;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .action-buttons a {
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+        }
+        .update-button {
+            background-color: #007bff;
+        }
+        .delete-button {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Attendance Details</h1>
+    </header>
+
+    <section>
+        <div class="profile-info">
+            <h2>Profile Details</h2>
+            <p><strong>Name:</strong> {{ profile.user.get_full_name }}</p>
+            <p><strong>Email:</strong> {{ profile.user.email }}</p>
+            <p><strong>User Type:</strong> {{ profile.user_type }}</p>
+        </div>
+
+        <div class="attendance-summary">
+            <h2>Attendance Summary</h2>
+            <p><strong>Present:</strong> {{ present_count }}</p>
+            <p><strong>Absent:</strong> {{ absent_count }}</p>
+            <p><strong>Late:</strong> {{ late_count }}</p>
+            <p><strong>Total Possible Attendances:</strong> {{ total_possible_attendances }}</p>
+            <p><strong>Attendance Percentage:</strong> {{ attendance_percentage|floatformat:2 }}%</p>
+            <p><strong>Punctuality Percentage:</strong> {{ punctuality_percentage|floatformat:2 }}%</p>
+        </div>
+
+        <div class="attendance-records">
+            <h2>Attendance Records</h2>
+            {% if attendance_records %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for record in attendance_records %}
+                            <tr>
+                                <td>{{ record.date }}</td>
+                                <td>{{ record.get_status_display }}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        <a href="{% url 'attendance-update' pk=record.id %}" class="update-button">Update</a>
+                                        <a href="{% url 'attendance-delete' pk=record.id %}" class="delete-button">Delete</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No attendance records available.</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; {{ current_year }} Your School Name</p>
+    </footer>
+</body>
+</html>

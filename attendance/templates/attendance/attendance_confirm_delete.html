@@ -1,0 +1,77 @@
+<!-- attendance/templates/attendance/attendance_confirm_delete.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Attendance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        section {
+            padding: 2em;
+        }
+        .form-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 1em;
+        }
+        .form-container h2 {
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 0.5em;
+        }
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+        }
+        .form-container form button {
+            padding: 0.5em;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .form-container form button:hover {
+            background-color: #c82333;
+        }
+        .form-container form a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        .form-container form a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Delete Attendance</h1>
+    </header>
+
+    <section>
+        <div class="form-container">
+            <h2>Are you sure you want to delete this record?</h2>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit">Yes, delete</button>
+                <a href="{{ request.META.HTTP_REFERER }}">Cancel</a>
+            </form>
+        </div>
+    </section>
+</body>
+</html>
