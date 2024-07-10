@@ -1,0 +1,98 @@
+<!-- reflections/templates/reflections/reflection_detail.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ reflection.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        nav {
+            text-align: center;
+            margin: 1em 0;
+        }
+        nav a {
+            margin: 0 15px;
+            text-decoration: none;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        main {
+            padding: 2em;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            color: white;
+            background-color: #4CAF50;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .btn-secondary {
+            background-color: #007bff;
+        }
+        .btn-secondary:hover {
+            background-color: #0056b3;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 1em;
+            margin-bottom: 1em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Reflection Details</h1>
+    </header>
+    <nav>
+        <a href="{% url 'reflection-list' %}">Home</a>
+        <a href="{% url 'reflection-create' %}">Create New Reflection</a>
+    </nav>
+    <main>
+        <div class="card">
+            <h2>{{ reflection.title }}</h2>
+            <p><strong>By:</strong> {{ reflection.owner.user.get_full_name }}</p>
+            <p><strong>Ayah:</strong></p>
+            <p>{{ reflection.ayah }}</p>
+            <p><strong>Reflection:</strong></p>
+            <p>{{ reflection.reflection }}</p>
+            <p><strong>Created at:</strong> {{ reflection.created_at }}</p>
+            <a href="{% url 'reflection-list' %}" class="btn">Back to list</a>
+            {% if request.user.profile == reflection.owner or request.user.profile.user_type == 'admin_teacher' %}
+                <a href="{% url 'reflection-update' reflection.id %}" class="btn btn-secondary">Edit</a>
+                <a href="{% url 'reflection-delete' reflection.id %}" class="btn btn-danger">Delete</a>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>
