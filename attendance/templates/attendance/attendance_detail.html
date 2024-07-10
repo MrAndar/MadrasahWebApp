@@ -88,7 +88,9 @@
             <h2>Profile Details</h2>
             <p><strong>Name:</strong> {{ profile.user.get_full_name }}</p>
             <p><strong>Email:</strong> {{ profile.user.email }}</p>
-            <p><strong>User Type:</strong> {{ profile.user_type }}</p>
+            <p><strong>Class:</strong> {{ profile.class_name }}</p>
+            <p><strong>Teacher:</strong> {{ profile.class_name.teacher }}</p>
+            <p><strong>User Type:</strong> {{ profile.get_user_type_display }}</p>
         </div>
 
         <div class="attendance-summary">
@@ -97,8 +99,8 @@
             <p><strong>Absent:</strong> {{ absent_count }}</p>
             <p><strong>Late:</strong> {{ late_count }}</p>
             <p><strong>Total Possible Attendances:</strong> {{ total_possible_attendances }}</p>
-            <p><strong>Attendance Percentage:</strong> {{ attendance_percentage|floatformat:2 }}%</p>
-            <p><strong>Punctuality Percentage:</strong> {{ punctuality_percentage|floatformat:2 }}%</p>
+            <p><strong>Attendance Percentage:</strong> {{ attendance_percentage }}%</p>
+            <p><strong>Punctuality Percentage:</strong> {{ punctuality_percentage }}%</p>
         </div>
 
         <div class="attendance-records">
